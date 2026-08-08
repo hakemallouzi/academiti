@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatPrice } from "@/backend/services/courses";
+import { formatPrice } from "@/lib/format";
 
 type CourseCardProps = {
   course: {

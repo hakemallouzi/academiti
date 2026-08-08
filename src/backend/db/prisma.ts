@@ -1,3 +1,4 @@
+import "server-only";
 import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
@@ -9,13 +10,13 @@ function ensureServerlessSqlite() {
   if (!onNetlify) return;
 
   const dest = "/tmp/academiti.db";
-  if (!fs.existsSync(dest)) {
+  if (!fs.existsSync(/*turbopackIgnore: true*/ dest)) {
     const candidates = [
       path.join(process.cwd(), "prisma", "deploy.db"),
       path.join(process.cwd(), ".next", "server", "prisma", "deploy.db"),
     ];
     for (const src of candidates) {
-      if (fs.existsSync(src)) {
+      if (fs.existsSync(/*turbopackIgnore: true*/ src)) {
         fs.copyFileSync(src, dest);
         break;
       }
@@ -23,7 +24,7 @@ function ensureServerlessSqlite() {
   }
 
   // Prefer the writable /tmp copy at runtime
-  if (fs.existsSync(dest)) {
+  if (fs.existsSync(/*turbopackIgnore: true*/ dest)) {
     process.env.DATABASE_URL = `file:${dest}`;
   }
 }

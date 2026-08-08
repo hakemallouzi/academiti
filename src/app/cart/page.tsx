@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireUser } from "@/backend/auth/session";
 import { getCart } from "@/backend/services/cart";
-import { formatPrice } from "@/backend/services/courses";
+import { formatPrice } from "@/lib/format";
 import { checkoutAction, removeFromCartAction } from "@/backend/actions";
 import { paymentsBypassed } from "@/backend/services/stripe";
 

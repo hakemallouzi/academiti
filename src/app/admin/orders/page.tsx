@@ -1,6 +1,6 @@
 import { requireAdmin } from "@/backend/auth/session";
 import { prisma } from "@/backend/db/prisma";
-import { formatPrice } from "@/backend/services/courses";
+import { formatPrice } from "@/lib/format";
 
 export default async function AdminOrdersPage() {
   await requireAdmin();

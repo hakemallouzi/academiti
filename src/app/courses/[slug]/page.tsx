@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/backend/auth/session";
-import { formatPrice, getCourseBySlug } from "@/backend/services/courses";
+import { getCourseBySlug } from "@/backend/services/courses";
+import { formatPrice } from "@/lib/format";
 import { isEnrolled } from "@/backend/services/orders";
 import { AddToCartButton } from "@/frontend/components/AddToCartButton";
 import { SyllabusAccordion } from "@/frontend/components/SyllabusAccordion";

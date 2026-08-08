@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/backend/auth/session";
 import { prisma } from "@/backend/db/prisma";
-import { formatPrice } from "@/backend/services/courses";
+import { formatPrice } from "@/lib/format";
 import { deleteCourseAction } from "@/backend/actions";
 
 export default async function AdminCoursesPage() {
