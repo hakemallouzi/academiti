@@ -1,8 +1,7 @@
 [build]
-  command = "npx prisma generate && DATABASE_URL=\"file:./deploy.db\" npx prisma db push && DATABASE_URL=\"file:./deploy.db\" npx tsx prisma/seed.ts && npx next build"
+  command = "npx prisma generate && npx next build"
 
 [build.environment]
   NODE_VERSION = "20"
 
-# SQLite paths are relative to prisma/schema.prisma.
-# Seeded prisma/deploy.db is copied to /tmp at runtime on Netlify.
+# prisma/deploy.db is committed (seeded) and copied to /tmp at runtime.
