@@ -1,10 +1,8 @@
 [build]
-  command = "npm run build"
+  command = "npx prisma generate && DATABASE_URL=\"file:./deploy.db\" npx prisma db push && DATABASE_URL=\"file:./deploy.db\" npx tsx prisma/seed.ts && npx next build"
 
 [build.environment]
   NODE_VERSION = "20"
 
-# Next.js OpenNext adapter is auto-applied by Netlify.
-# Required env vars (set in Netlify UI/CLI):
-#   DATABASE_URL, AUTH_SECRET, NEXTAUTH_URL, NEXT_PUBLIC_APP_URL
-#   AUTH_TRUST_HOST=true, DEV_BYPASS_PAYMENTS=true (until Stripe is live)
+# SQLite paths are relative to prisma/schema.prisma.
+# Seeded prisma/deploy.db is copied to /tmp at runtime on Netlify.
