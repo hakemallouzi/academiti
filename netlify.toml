@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Next.js is auto-detected on Netlify (OpenNext adapter).
+# Set these in the Netlify UI / CLI for production:
+#   DATABASE_URL          — Postgres connection string (SQLite will not work on Netlify)
+#   AUTH_SECRET           — random secret for Auth.js
+#   NEXTAUTH_URL          — https://your-site.netlify.app
+#   NEXT_PUBLIC_APP_URL   — same as NEXTAUTH_URL
+#   DEV_BYPASS_PAYMENTS   — "true" until Stripe is configured
