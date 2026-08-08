@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String           @id @default(cuid())
+  name         String
+  email        String           @unique
+  passwordHash String
+  role         String           @default("USER")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  cartItems    CartItem[]
+  orders       Order[]
+  enrollments  Enrollment[]
+  progress     LessonProgress[]
+  certificates Certificate[]
+  testAttempts TestAttempt[]
+}
+
+model Course {
+  id           String         @id @default(cuid())
+  title        String
+  slug         String         @unique
+  description  String
+  language     String
+  level        String
+  category     String         @default("Skills")
+  priceCents   Int
+  thumbnail    String?
+  featured     Boolean        @default(false)
+  published    Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  lessons      Lesson[]
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+}
+
+model Lesson {
+  id          String           @id @default(cuid())
+  courseId    String
+  title       String
+  body        String
+  order       Int
+  durationMin Int              @default(10)
+  audioUrl    String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
+
+  @@unique([courseId, order])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  status          String      @default("PENDING")
+  totalCents      Int
+  stripeSessionId String?     @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  orderId    String
+  courseId   String
+  priceCents Int
+  order      Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  course     Course @relation(fields: [courseId], references: [id])
+
+  @@unique([orderId, courseId])
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model Certificate {
+  id       String   @id @default(cuid())
+  userId   String
+  courseId String
+  code     String   @unique
+  issuedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model LanguageTest {
+  id          String         @id @default(cuid())
+  title       String
+  slug        String         @unique
+  description String
+  language    String
+  published   Boolean        @default(false)
+  priceCents  Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  questions   TestQuestion[]
+  attempts    TestAttempt[]
+}
+
+model TestQuestion {
+  id           String       @id @default(cuid())
+  testId       String
+  prompt       String
+  optionsJson  String
+  correctIndex Int
+  order        Int
+  test         LanguageTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, order])
+}
+
+model TestAttempt {
+  id          String       @id @default(cuid())
+  userId      String
+  testId      String
+  score       Int
+  total       Int
+  band        String?
+  answersJson String
+  createdAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test        LanguageTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
